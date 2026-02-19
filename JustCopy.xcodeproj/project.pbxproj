@@ -7,14 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0367B1698A31B6A9AE43C8F4 /* HotKeyPreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E22D20A180774130DABA205 /* HotKeyPreferencesStore.swift */; };
 		088276442CA4186AF024DF27 /* PermissionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD9FFA2B84679AA9D061711 /* PermissionService.swift */; };
 		0AE12914A627E64E08DBFD16 /* ClipboardService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2739CA9DCE442184E27764 /* ClipboardService.swift */; };
 		1C46F3ED739BF5230D54C01E /* ScreenCaptureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6212AAB1C2B544AB88A7AA9 /* ScreenCaptureService.swift */; };
 		1EB0ECFB83161A1F8AF9E70F /* OCRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31F95314F04A289321F345B /* OCRService.swift */; };
 		29414813A7E9B8941EE706DC /* SelectionOverlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E295EFE0760F09253877E6BB /* SelectionOverlayController.swift */; };
 		2A0D7261C2AC63A5CDAE7F5E /* JustCopyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C2DEA03428071EB6E74936 /* JustCopyApp.swift */; };
+		4CF66C0D35BC3F4E5C921B46 /* ShortcutRecorderField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF21E2943EC8371A7A0A0F4 /* ShortcutRecorderField.swift */; };
 		656FA570590796A7E87C5706 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAFAC44F4BA733542C376A3 /* SettingsView.swift */; };
+		8D25C2D7A774301810E995E2 /* HotKeyShortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200A80E9F6FBB409E1C61157 /* HotKeyShortcut.swift */; };
 		9D731ED6A7A17DA1FDF53BFB /* SelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74FA9C6834E5F75BF8C79126 /* SelectionView.swift */; };
+		B1E07E4224AB8BA5A1FE342E /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A162B49B1A15C5545DC5B1B1 /* SettingsWindowController.swift */; };
 		BDDEED6D63EEB6BA07989E70 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD54696CA7F52DEE0D5ECE9F /* AppDelegate.swift */; };
 		E3287357C08E245972C693D4 /* GlobalHotKeyMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0CCA681B365B10F0C3AAA9 /* GlobalHotKeyMonitor.swift */; };
 /* End PBXBuildFile section */
@@ -23,10 +27,14 @@
 		0DAFAC44F4BA733542C376A3 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		1CD9FFA2B84679AA9D061711 /* PermissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionService.swift; sourceTree = "<group>"; };
 		1F0CCA681B365B10F0C3AAA9 /* GlobalHotKeyMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalHotKeyMonitor.swift; sourceTree = "<group>"; };
+		200A80E9F6FBB409E1C61157 /* HotKeyShortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotKeyShortcut.swift; sourceTree = "<group>"; };
 		74FA9C6834E5F75BF8C79126 /* SelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionView.swift; sourceTree = "<group>"; };
 		757785B2B83D207CD4C7D8C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		7E22D20A180774130DABA205 /* HotKeyPreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotKeyPreferencesStore.swift; sourceTree = "<group>"; };
 		89C2DEA03428071EB6E74936 /* JustCopyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustCopyApp.swift; sourceTree = "<group>"; };
+		A162B49B1A15C5545DC5B1B1 /* SettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindowController.swift; sourceTree = "<group>"; };
 		B31F95314F04A289321F345B /* OCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRService.swift; sourceTree = "<group>"; };
+		BAF21E2943EC8371A7A0A0F4 /* ShortcutRecorderField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutRecorderField.swift; sourceTree = "<group>"; };
 		D6212AAB1C2B544AB88A7AA9 /* ScreenCaptureService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenCaptureService.swift; sourceTree = "<group>"; };
 		DA2739CA9DCE442184E27764 /* ClipboardService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardService.swift; sourceTree = "<group>"; };
 		DD54696CA7F52DEE0D5ECE9F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -57,6 +65,8 @@
 			isa = PBXGroup;
 			children = (
 				0DAFAC44F4BA733542C376A3 /* SettingsView.swift */,
+				A162B49B1A15C5545DC5B1B1 /* SettingsWindowController.swift */,
+				BAF21E2943EC8371A7A0A0F4 /* ShortcutRecorderField.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -112,6 +122,8 @@
 			isa = PBXGroup;
 			children = (
 				1F0CCA681B365B10F0C3AAA9 /* GlobalHotKeyMonitor.swift */,
+				7E22D20A180774130DABA205 /* HotKeyPreferencesStore.swift */,
+				200A80E9F6FBB409E1C61157 /* HotKeyShortcut.swift */,
 			);
 			path = HotKey;
 			sourceTree = "<group>";
@@ -181,6 +193,8 @@
 				BDDEED6D63EEB6BA07989E70 /* AppDelegate.swift in Sources */,
 				0AE12914A627E64E08DBFD16 /* ClipboardService.swift in Sources */,
 				E3287357C08E245972C693D4 /* GlobalHotKeyMonitor.swift in Sources */,
+				0367B1698A31B6A9AE43C8F4 /* HotKeyPreferencesStore.swift in Sources */,
+				8D25C2D7A774301810E995E2 /* HotKeyShortcut.swift in Sources */,
 				2A0D7261C2AC63A5CDAE7F5E /* JustCopyApp.swift in Sources */,
 				1EB0ECFB83161A1F8AF9E70F /* OCRService.swift in Sources */,
 				088276442CA4186AF024DF27 /* PermissionService.swift in Sources */,
@@ -188,6 +202,8 @@
 				29414813A7E9B8941EE706DC /* SelectionOverlayController.swift in Sources */,
 				9D731ED6A7A17DA1FDF53BFB /* SelectionView.swift in Sources */,
 				656FA570590796A7E87C5706 /* SettingsView.swift in Sources */,
+				B1E07E4224AB8BA5A1FE342E /* SettingsWindowController.swift in Sources */,
+				4CF66C0D35BC3F4E5C921B46 /* ShortcutRecorderField.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

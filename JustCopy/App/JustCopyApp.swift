@@ -6,9 +6,7 @@ struct JustCopyApp: App {
 
     var body: some Scene {
         Settings {
-            SettingsView()
-                .environmentObject(appDelegate)
-                .frame(width: 480, height: 280)
+            EmptyView()
         }
     }
 }

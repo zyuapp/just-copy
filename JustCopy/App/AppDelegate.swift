@@ -1,11 +1,12 @@
 import AppKit
-import Carbon
 
 final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     @Published private(set) var lastCopiedPreview = "No text copied yet."
+    @Published private(set) var hotKeyShortcut = HotKeyShortcut.defaultCapture
 
     private let appName = "JustCopy"
     private let hotKeyMonitor = GlobalHotKeyMonitor()
+    private let hotKeyPreferencesStore = HotKeyPreferencesStore()
     private let overlayController = SelectionOverlayController()
     private let permissionService = PermissionService()
     private let captureService = ScreenCaptureService()
@@ -34,12 +35,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         replayKitAnchorWindow
     }
 
+    private lazy var settingsWindowController = SettingsWindowController(appDelegate: self)
     private var statusItem: NSStatusItem?
     private var resetStatusWorkItem: DispatchWorkItem?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         setupStatusItem()
-        registerHotKey()
+        restoreAndRegisterHotKey()
         _ = replayKitAnchorWindow
     }
 
@@ -55,11 +57,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     }
 
     @objc private func openSettingsAction(_ sender: Any?) {
-        let opened = NSApplication.shared.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-        if !opened {
-            _ = NSApplication.shared.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
-        }
-        NSApplication.shared.activate(ignoringOtherApps: true)
+        settingsWindowController.show()
     }
 
     @objc private func quitAction(_ sender: Any?) {
@@ -91,17 +89,61 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         statusItem = item
     }
 
-    private func registerHotKey() {
-        let modifiers = UInt32(cmdKey) | UInt32(shiftKey)
+    func applyHotKeyShortcut(_ shortcut: HotKeyShortcut) {
+        guard shortcut != hotKeyShortcut else { return }
+        let previousShortcut = hotKeyShortcut
 
         do {
-            try hotKeyMonitor.register(keyCode: UInt32(kVK_ANSI_2), modifiers: modifiers) { [weak self] in
-                DispatchQueue.main.async {
-                    self?.beginCaptureFlow()
-                }
+            try registerGlobalHotKey(shortcut: shortcut)
+            hotKeyShortcut = shortcut
+            hotKeyPreferencesStore.save(shortcut: shortcut)
+        } catch let registrationError {
+            do {
+                try registerGlobalHotKey(shortcut: previousShortcut)
+            } catch let restoreError {
+                presentError(
+                    title: "Hotkey setup failed",
+                    message: "\(registrationError.localizedDescription)\n\(restoreError.localizedDescription)"
+                )
+                return
             }
-        } catch {
-            presentError(title: "Hotkey setup failed", message: error.localizedDescription)
+
+            presentError(
+                title: "Could not update shortcut",
+                message: "\(registrationError.localizedDescription)\nThe previous shortcut (\(previousShortcut.displayString)) is still active."
+            )
+        }
+    }
+
+    private func restoreAndRegisterHotKey() {
+        let preferredShortcut = hotKeyPreferencesStore.loadShortcut()
+
+        do {
+            try registerGlobalHotKey(shortcut: preferredShortcut)
+            hotKeyShortcut = preferredShortcut
+        } catch let registrationError {
+            if preferredShortcut != .defaultCapture {
+                do {
+                    try registerGlobalHotKey(shortcut: .defaultCapture)
+                    hotKeyShortcut = .defaultCapture
+                    hotKeyPreferencesStore.save(shortcut: .defaultCapture)
+                    presentError(
+                        title: "Hotkey reset to default",
+                        message: "\(registrationError.localizedDescription)\nJustCopy restored the default shortcut (\(HotKeyShortcut.defaultCapture.displayString))."
+                    )
+                    return
+                } catch { }
+            }
+
+            presentError(title: "Hotkey setup failed", message: registrationError.localizedDescription)
+        }
+    }
+
+    private func registerGlobalHotKey(shortcut: HotKeyShortcut) throws {
+        try hotKeyMonitor.register(keyCode: shortcut.keyCode, modifiers: shortcut.modifiers) { [weak self] in
+            DispatchQueue.main.async {
+                self?.beginCaptureFlow()
+            }
         }
     }
 

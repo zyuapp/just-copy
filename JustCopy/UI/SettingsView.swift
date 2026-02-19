@@ -13,6 +13,18 @@ struct SettingsView: View {
 
             Divider()
 
+            Text("Global shortcut")
+                .font(.headline)
+
+            ShortcutRecorderField(shortcut: appDelegate.hotKeyShortcut) { shortcut in
+                appDelegate.applyHotKeyShortcut(shortcut)
+            }
+
+            Text("Click the field, then press a shortcut with at least one modifier key. Press Escape to cancel recording.")
+                .foregroundStyle(.secondary)
+
+            Divider()
+
             Text("Last copied snippet")
                 .font(.headline)
 
