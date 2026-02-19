@@ -1,0 +1,36 @@
+name: JustCopy
+options:
+  minimumXcodeGenVersion: 2.40.0
+  bundleIdPrefix: com.local
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: 5.10
+    PRODUCT_NAME: JustCopy
+
+targets:
+  JustCopy:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: JustCopy
+    info:
+      path: JustCopy/Info.plist
+      properties:
+        CFBundleDisplayName: JustCopy
+        CFBundleName: JustCopy
+        LSUIElement: true
+        NSPrincipalClass: NSApplication
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.local.justcopy
+
+schemes:
+  JustCopy:
+    build:
+      targets:
+        JustCopy: all
+    run:
+      config: Debug
