@@ -16,11 +16,15 @@ targets:
     deploymentTarget: "14.0"
     sources:
       - path: JustCopy
+    resources:
+      - path: JustCopy/Assets.xcassets
     info:
       path: JustCopy/Info.plist
       properties:
         CFBundleDisplayName: JustCopy
         CFBundleName: JustCopy
+        CFBundleShortVersionString: "1.0.1"
+        CFBundleVersion: "2"
         LSUIElement: true
         NSPrincipalClass: NSApplication
     settings:

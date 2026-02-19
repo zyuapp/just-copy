@@ -12,6 +12,7 @@
 		0AE12914A627E64E08DBFD16 /* ClipboardService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2739CA9DCE442184E27764 /* ClipboardService.swift */; };
 		1C46F3ED739BF5230D54C01E /* ScreenCaptureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6212AAB1C2B544AB88A7AA9 /* ScreenCaptureService.swift */; };
 		1EB0ECFB83161A1F8AF9E70F /* OCRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31F95314F04A289321F345B /* OCRService.swift */; };
+		22DEA5ECD507767C9ACC9899 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1F712988A8C77584AB1978C3 /* Assets.xcassets */; };
 		29414813A7E9B8941EE706DC /* SelectionOverlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E295EFE0760F09253877E6BB /* SelectionOverlayController.swift */; };
 		2A0D7261C2AC63A5CDAE7F5E /* JustCopyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C2DEA03428071EB6E74936 /* JustCopyApp.swift */; };
 		4CF66C0D35BC3F4E5C921B46 /* ShortcutRecorderField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF21E2943EC8371A7A0A0F4 /* ShortcutRecorderField.swift */; };
@@ -27,6 +28,7 @@
 		0DAFAC44F4BA733542C376A3 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		1CD9FFA2B84679AA9D061711 /* PermissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionService.swift; sourceTree = "<group>"; };
 		1F0CCA681B365B10F0C3AAA9 /* GlobalHotKeyMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalHotKeyMonitor.swift; sourceTree = "<group>"; };
+		1F712988A8C77584AB1978C3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		200A80E9F6FBB409E1C61157 /* HotKeyShortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotKeyShortcut.swift; sourceTree = "<group>"; };
 		74FA9C6834E5F75BF8C79126 /* SelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionView.swift; sourceTree = "<group>"; };
 		757785B2B83D207CD4C7D8C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -90,6 +92,7 @@
 		8D53FDE490A1EA087813A69B /* JustCopy */ = {
 			isa = PBXGroup;
 			children = (
+				1F712988A8C77584AB1978C3 /* Assets.xcassets */,
 				757785B2B83D207CD4C7D8C1 /* Info.plist */,
 				E56D07E85BFF3E98D704E5D6 /* App */,
 				02A47864D8507EFDA6C9AA17 /* Capture */,
@@ -145,6 +148,7 @@
 			buildConfigurationList = 181076BB0B9F5E4F74A44964 /* Build configuration list for PBXNativeTarget "JustCopy" */;
 			buildPhases = (
 				BA24FCA50E7FA69C7BA7BC5C /* Sources */,
+				9FCF4330A381752DD5329016 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -184,6 +188,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9FCF4330A381752DD5329016 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22DEA5ECD507767C9ACC9899 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		BA24FCA50E7FA69C7BA7BC5C /* Sources */ = {
