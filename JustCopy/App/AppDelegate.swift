@@ -4,6 +4,34 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     @Published private(set) var hotKeyShortcut = HotKeyShortcut.defaultCapture
 
     private let appName = "JustCopy"
+    private enum StatusIconState {
+        case idle
+        case scanning
+        case copied
+
+        var symbolName: String {
+            switch self {
+            case .idle:
+                return "doc.on.clipboard"
+            case .scanning:
+                return "viewfinder"
+            case .copied:
+                return "checkmark.circle.fill"
+            }
+        }
+
+        var tooltip: String {
+            switch self {
+            case .idle:
+                return "JustCopy"
+            case .scanning:
+                return "Scanning text..."
+            case .copied:
+                return "Copied"
+            }
+        }
+    }
+
     private let hotKeyMonitor = GlobalHotKeyMonitor()
     private let hotKeyPreferencesStore = HotKeyPreferencesStore()
     private let overlayController = SelectionOverlayController()
@@ -65,8 +93,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     }
 
     private func setupStatusItem() {
-        let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        item.button?.title = appName
+        let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+        item.button?.title = ""
+        item.button?.imagePosition = .imageOnly
 
         let menu = NSMenu()
 
@@ -87,6 +116,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
         item.menu = menu
         statusItem = item
+        setStatusIcon(.idle)
     }
 
     func applyHotKeyShortcut(_ shortcut: HotKeyShortcut) {
@@ -181,7 +211,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     }
 
     private func processCapture(rect: CGRect) {
-        flashStatus("Scanning...")
+        flashStatus(.scanning)
 
         captureTask?.cancel()
         captureTask = Task(priority: .userInitiated) { [weak self] in
@@ -196,32 +226,46 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
                 try await self.clipboardService.copy(text)
 
                 await MainActor.run {
-                    self.flashStatus("Copied")
+                    self.flashStatus(.copied)
                 }
             } catch {
                 if error is CancellationError {
                     return
                 }
                 await MainActor.run {
-                    self.flashStatus(self.appName)
+                    self.flashStatus(.idle)
                     self.presentError(title: "Could not copy text", message: error.localizedDescription)
                 }
             }
         }
     }
 
-    private func flashStatus(_ text: String) {
-        statusItem?.button?.title = text
+    private func flashStatus(_ state: StatusIconState) {
+        setStatusIcon(state)
 
         resetStatusWorkItem?.cancel()
-        guard text != appName else { return }
+        guard state != .idle else { return }
 
         let workItem = DispatchWorkItem { [weak self] in
-            self?.statusItem?.button?.title = self?.appName ?? "JustCopy"
+            self?.setStatusIcon(.idle)
         }
 
         resetStatusWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.4, execute: workItem)
+    }
+
+    private func setStatusIcon(_ state: StatusIconState) {
+        guard let button = statusItem?.button else { return }
+        button.title = ""
+        button.toolTip = state.tooltip
+
+        guard let image = NSImage(systemSymbolName: state.symbolName, accessibilityDescription: state.tooltip) else {
+            return
+        }
+
+        image.isTemplate = true
+        image.size = NSSize(width: 15, height: 15)
+        button.image = image
     }
 
     private func presentPermissionAlert() {
