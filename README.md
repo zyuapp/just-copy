@@ -26,6 +26,13 @@ make run
 
 On first use, macOS asks for Screen Recording permission. If access is denied, trigger capture again and open System Settings from the prompt.
 
+## Install via Homebrew
+
+```bash
+brew tap zyuapp/tap
+brew install --cask zyuapp/tap/just-copy
+```
+
 ## Build Commands
 
 ```bash
