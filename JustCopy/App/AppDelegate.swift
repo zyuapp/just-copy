@@ -12,20 +12,46 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     private let ocrService = OCRService()
     private let clipboardService = ClipboardService()
 
+    private var captureTask: Task<Void, Never>?
+    private lazy var replayKitAnchorWindow: NSWindow = {
+        let window = NSWindow(
+            contentRect: NSRect(x: -10_000, y: -10_000, width: 1, height: 1),
+            styleMask: [.borderless],
+            backing: .buffered,
+            defer: false
+        )
+        window.isOpaque = false
+        window.alphaValue = 0
+        window.ignoresMouseEvents = true
+        window.hasShadow = false
+        window.isReleasedWhenClosed = false
+        window.collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle]
+        window.orderOut(nil)
+        return window
+    }()
+
+    @objc dynamic var window: NSWindow? {
+        replayKitAnchorWindow
+    }
+
     private var statusItem: NSStatusItem?
     private var resetStatusWorkItem: DispatchWorkItem?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         setupStatusItem()
         registerHotKey()
+        _ = replayKitAnchorWindow
     }
 
     func applicationWillTerminate(_ notification: Notification) {
+        captureTask?.cancel()
         hotKeyMonitor.unregister()
     }
 
     @objc private func captureTextAction(_ sender: Any?) {
-        beginCaptureFlow()
+        DispatchQueue.main.async { [weak self] in
+            self?.beginCaptureFlow()
+        }
     }
 
     @objc private func openSettingsAction(_ sender: Any?) {
@@ -94,19 +120,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     private func processCapture(rect: CGRect) {
         flashStatus("Scanning...")
 
-        Task { [weak self] in
+        captureTask?.cancel()
+        captureTask = Task(priority: .userInitiated) { [weak self] in
             guard let self else { return }
 
             do {
+                try await Task.sleep(nanoseconds: 40_000_000)
                 let image = try await self.captureService.capture(rect: rect)
+                try Task.checkCancellation()
                 let text = try self.ocrService.recognizeText(in: image)
-                try self.clipboardService.copy(text)
+                try Task.checkCancellation()
+                try await self.clipboardService.copy(text)
 
                 await MainActor.run {
                     self.lastCopiedPreview = text.preview(maxLength: 180)
                     self.flashStatus("Copied")
                 }
             } catch {
+                if error is CancellationError {
+                    return
+                }
                 await MainActor.run {
                     self.flashStatus(self.appName)
                     self.presentError(title: "Could not copy text", message: error.localizedDescription)

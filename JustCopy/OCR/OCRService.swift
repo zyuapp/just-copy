@@ -1,4 +1,5 @@
 import CoreGraphics
+import CoreML
 import Vision
 
 enum OCRServiceError: LocalizedError {
@@ -18,6 +19,7 @@ final class OCRService {
         request.recognitionLevel = .accurate
         request.usesLanguageCorrection = true
         request.minimumTextHeight = 0.01
+        configureCPUOnlyExecution(for: request)
 
         let handler = VNImageRequestHandler(cgImage: image, options: [:])
         try handler.perform([request])
@@ -52,6 +54,20 @@ final class OCRService {
         }
 
         return text
+    }
+
+    private func configureCPUOnlyExecution(for request: VNRecognizeTextRequest) {
+        if #available(macOS 14.0, *) {
+            let cpuDevice = MLComputeDevice.allComputeDevices.first { device in
+                if case .cpu = device { return true }
+                return false
+            }
+
+            request.setComputeDevice(cpuDevice, for: .main)
+            request.setComputeDevice(cpuDevice, for: .postProcessing)
+        } else {
+            request.usesCPUOnly = true
+        }
     }
 
     private func stitchLines(_ lines: [(text: String, box: CGRect)]) -> String {

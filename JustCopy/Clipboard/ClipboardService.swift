@@ -12,6 +12,7 @@ enum ClipboardServiceError: LocalizedError {
 }
 
 final class ClipboardService {
+    @MainActor
     func copy(_ text: String) throws {
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()

@@ -24,13 +24,18 @@ final class ScreenCaptureService {
             throw ScreenCaptureServiceError.invalidSelection
         }
 
-        guard let displayContext = makeDisplayContext(for: selection) else {
+        guard let displayContext = await makeDisplayContext(for: selection) else {
             throw ScreenCaptureServiceError.displayNotFound
         }
 
         let shareableContent = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
         guard let display = shareableContent.displays.first(where: { $0.displayID == displayContext.displayID }) else {
             throw ScreenCaptureServiceError.displayNotFound
+        }
+
+        let currentPID = ProcessInfo.processInfo.processIdentifier
+        let ownWindows = shareableContent.windows.filter { window in
+            window.owningApplication?.processID == currentPID
         }
 
         let sourceRect = convertSelectionToDisplayPoints(selection, context: displayContext)
@@ -45,7 +50,7 @@ final class ScreenCaptureService {
         configuration.showsCursor = false
         configuration.capturesAudio = false
 
-        let filter = SCContentFilter(display: display, excludingWindows: [])
+        let filter = SCContentFilter(display: display, excludingWindows: ownWindows)
 
         do {
             return try await SCScreenshotManager.captureImage(contentFilter: filter, configuration: configuration)
@@ -54,6 +59,7 @@ final class ScreenCaptureService {
         }
     }
 
+    @MainActor
     private func makeDisplayContext(for selection: CGRect) -> DisplayContext? {
         let bestScreen = NSScreen.screens
             .map { ($0, $0.frame.intersection(selection).area) }
