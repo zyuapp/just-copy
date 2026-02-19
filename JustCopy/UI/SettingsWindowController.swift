@@ -5,13 +5,13 @@ final class SettingsWindowController: NSWindowController {
     init(appDelegate: AppDelegate) {
         let rootView = SettingsView()
             .environmentObject(appDelegate)
-            .frame(width: 520, height: 320)
+            .frame(width: 560, height: 380)
         let hostingController = NSHostingController(rootView: rootView)
 
         let window = NSWindow(contentViewController: hostingController)
         window.title = "Settings"
         window.styleMask = [.titled, .closable, .miniaturizable]
-        window.setContentSize(NSSize(width: 520, height: 320))
+        window.setContentSize(NSSize(width: 560, height: 380))
         window.center()
         window.isReleasedWhenClosed = false
         window.collectionBehavior = [.moveToActiveSpace]

@@ -11,11 +11,35 @@ struct ShortcutRecorderField: View {
 
     var body: some View {
         Button(action: beginRecording) {
-            Text(recorder.isRecording ? "Type new shortcut (Esc to cancel)" : shortcut.displayString)
-                .font(.system(.body, design: .monospaced))
-                .frame(maxWidth: .infinity, alignment: .leading)
+            HStack(spacing: 8) {
+                Image(systemName: recorder.isRecording ? "record.circle.fill" : "keyboard")
+                    .foregroundStyle(recorder.isRecording ? .red : .secondary)
+
+                Text(recorder.isRecording ? "Type new shortcut (Esc to cancel)" : shortcut.displayString)
+                    .font(.system(.body, design: .monospaced))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(.vertical, 7)
+            .padding(.horizontal, 9)
+            .background(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(
+                        recorder.isRecording
+                            ? Color.red.opacity(0.08)
+                            : Color(nsColor: .textBackgroundColor)
+                    )
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .strokeBorder(
+                        recorder.isRecording
+                            ? Color.red.opacity(0.6)
+                            : Color(nsColor: .separatorColor).opacity(0.45),
+                        lineWidth: 1
+                    )
+            )
         }
-        .buttonStyle(.bordered)
+        .buttonStyle(.plain)
         .onDisappear {
             recorder.stopRecording()
         }
