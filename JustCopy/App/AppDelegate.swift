@@ -104,7 +104,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         capture.target = self
         menu.addItem(capture)
 
-        let settings = NSMenuItem(title: "Settings...", action: #selector(openSettingsAction(_:)), keyEquivalent: ",")
+        let settings = NSMenuItem(title: "Settings...", action: #selector(openSettingsAction(_:)), keyEquivalent: "")
         settings.target = self
         menu.addItem(settings)
 
