@@ -1,7 +1,6 @@
 import AppKit
 
 final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
-    @Published private(set) var lastCopiedPreview = "No text copied yet."
     @Published private(set) var hotKeyShortcut = HotKeyShortcut.defaultCapture
 
     private let appName = "JustCopy"
@@ -38,6 +37,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     private lazy var settingsWindowController = SettingsWindowController(appDelegate: self)
     private var statusItem: NSStatusItem?
     private var resetStatusWorkItem: DispatchWorkItem?
+    private var isRecordingShortcut = false
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         setupStatusItem()
@@ -115,6 +115,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         }
     }
 
+    func setShortcutRecording(_ isRecording: Bool) {
+        guard isRecording != isRecordingShortcut else { return }
+        isRecordingShortcut = isRecording
+
+        if isRecording {
+            hotKeyMonitor.unregister()
+            return
+        }
+
+        do {
+            try registerGlobalHotKey(shortcut: hotKeyShortcut)
+        } catch {
+            presentError(
+                title: "Hotkey setup failed",
+                message: "\(error.localizedDescription)\nReopen Settings to choose a new shortcut."
+            )
+        }
+    }
+
     private func restoreAndRegisterHotKey() {
         let preferredShortcut = hotKeyPreferencesStore.loadShortcut()
 
@@ -148,6 +167,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     }
 
     private func beginCaptureFlow() {
+        guard !isRecordingShortcut else { return }
+
         guard permissionService.requestScreenRecordingPermission() else {
             presentPermissionAlert()
             return
@@ -175,7 +196,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
                 try await self.clipboardService.copy(text)
 
                 await MainActor.run {
-                    self.lastCopiedPreview = text.preview(maxLength: 180)
                     self.flashStatus("Copied")
                 }
             } catch {
@@ -225,16 +245,5 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         alert.informativeText = message
         alert.addButton(withTitle: "OK")
         alert.runModal()
-    }
-}
-
-private extension String {
-    func preview(maxLength: Int) -> String {
-        if count <= maxLength {
-            return self
-        }
-
-        let index = self.index(startIndex, offsetBy: maxLength)
-        return String(self[..<index]) + "..."
     }
 }
