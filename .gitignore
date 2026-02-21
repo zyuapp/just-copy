@@ -3,4 +3,4 @@
 .release/
 xcuserdata/
 .codex/environments/environment.toml
-.claude/
+.claude/settings.local.json
