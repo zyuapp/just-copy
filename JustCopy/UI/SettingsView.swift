@@ -1,18 +1,29 @@
+import ServiceManagement
 import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject private var appDelegate: AppDelegate
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Settings")
-                .font(.system(size: 22, weight: .semibold))
-
+        VStack(alignment: .leading, spacing: 20) {
             Text("Press your global shortcut, drag an area on screen, and the recognized text is copied to the clipboard.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
 
-            GroupBox("Global shortcut") {
+            // MARK: - General Section
+            SettingsSection(icon: "gear", title: "General") {
+                Toggle("Start at Launch", isOn: Binding(
+                    get: { SMAppService.mainApp.status == .enabled },
+                    set: { newValue in
+                        try? newValue
+                            ? SMAppService.mainApp.register()
+                            : SMAppService.mainApp.unregister()
+                    }
+                ))
+            }
+
+            // MARK: - Shortcut Section
+            SettingsSection(icon: "keyboard", title: "Shortcut") {
                 VStack(alignment: .leading, spacing: 10) {
                     ShortcutRecorderField(
                         shortcut: appDelegate.hotKeyShortcut,
@@ -27,36 +38,69 @@ struct SettingsView: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
-                .padding(.top, 2)
             }
 
-            GroupBox("How to use") {
-                VStack(alignment: .leading, spacing: 8) {
-                    InstructionRow(text: "Press your shortcut to start the area selection.")
-                    InstructionRow(text: "Drag a box around text and release the mouse.")
-                    InstructionRow(text: "Recognized text is copied automatically.")
+            // MARK: - How to Use Section
+            SettingsSection(icon: "questionmark.circle", title: "How to Use") {
+                VStack(alignment: .leading, spacing: 12) {
+                    NumberedStep(number: 1, text: "Press your shortcut to start the area selection.")
+                    NumberedStep(number: 2, text: "Drag a box around text and release the mouse.")
+                    NumberedStep(number: 3, text: "Recognized text is copied automatically.")
                 }
-                .padding(.top, 2)
             }
 
             Spacer(minLength: 0)
+
+            // MARK: - Version Footer
+            HStack {
+                Spacer()
+                Text("JustCopy v1.0.1")
+                    .font(.footnote)
+                    .foregroundStyle(.tertiary)
+                Spacer()
+            }
         }
-        .padding(20)
+        .padding(24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(nsColor: .windowBackgroundColor))
     }
 }
 
-private struct InstructionRow: View {
+// MARK: - Section Container
+
+private struct SettingsSection<Content: View>: View {
+    let icon: String
+    let title: String
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label(title, systemImage: icon)
+                .font(.headline)
+                .foregroundStyle(.primary)
+
+            content
+                .padding(14)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 10))
+        }
+    }
+}
+
+// MARK: - Numbered Step
+
+private struct NumberedStep: View {
+    let number: Int
     let text: String
 
     var body: some View {
         HStack(spacing: 10) {
-            Image(systemName: "circle.fill")
-                .font(.system(size: 5))
-                .foregroundStyle(.tertiary)
+            Image(systemName: "\(number).circle.fill")
+                .font(.system(size: 18))
+                .foregroundStyle(Color.accentColor)
             Text(text)
                 .font(.callout)
+                .foregroundStyle(.secondary)
             Spacer(minLength: 0)
         }
     }
